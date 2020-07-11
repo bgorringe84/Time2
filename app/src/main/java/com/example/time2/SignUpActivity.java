@@ -41,6 +41,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         switch(view.getId()) {
             case R.id.textView3:
+                finish();
                 startActivity(new Intent(this, MainActivity.class));
                 break;
             case R.id.button:
@@ -79,9 +80,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    Intent intent = new Intent(SignUpActivity.this, ProfileActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // prevent user from using back button to return to login
-                    startActivity(intent);
+                    finish();
+                    startActivity(new Intent(SignUpActivity.this, ProfileActivity.class));
+//                    Intent intent = new Intent(SignUpActivity.this, ProfileActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // prevent user from using back button to return to login
+//                    startActivity(intent);
                 } else {
                     if(task.getException() instanceof FirebaseAuthUserCollisionException) {
                         Toast.makeText(getApplicationContext(), "User Already Registered", Toast.LENGTH_SHORT).show();
