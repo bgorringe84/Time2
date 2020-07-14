@@ -5,11 +5,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -23,21 +27,28 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     ImageView imageView;
     EditText editName, editIncome;
+    Button saveBtn;
     private static final int CHOOSE_IMAGE = 101;
     String profileImageUrl;
     Uri uriProfileImage;
     ProgressBar progressBar;
     FirebaseAuth mAuth;
+    FirebaseFirestore fStore;
+    String TAG = "Add User Preferences";
 
 
     @Override
@@ -50,6 +61,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         imageView = findViewById(R.id.imageView);
         progressBar = findViewById(R.id.progressbar);
         mAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        saveBtn = findViewById(R.id.button2);
 
         loadUserInformation();
 
@@ -60,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+        saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveUserInformation();
@@ -110,6 +123,29 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             editIncome.setError("Amount Required");
             editIncome.requestFocus();
             return;
+        }
+
+        // Add User Details to Firestore
+        if(!TextUtils.isEmpty(displayName) && !TextUtils.isEmpty(userIncome)) {
+            Map<String, Object> userPref = new HashMap<>();
+            userPref.put("name", displayName);
+            userPref.put("income", userIncome);
+
+            // Add new document
+            fStore.collection("User_Pref")
+                    .add(userPref)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "User Preference Added");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding preference");
+                        }
+                    });
         }
 
         FirebaseUser user = mAuth.getCurrentUser();
