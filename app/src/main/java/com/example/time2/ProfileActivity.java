@@ -182,6 +182,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         startActivityForResult(Intent.createChooser(intent, "Select Profile Image"), CHOOSE_IMAGE);
     }
 
+    public void logout(View view) {
+        FirebaseAuth.getInstance().signOut(); //logout
+        Toast.makeText(this, "Logged out!", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        finish();
+    }
+
     @Override
     public void onClick(View view) {
 

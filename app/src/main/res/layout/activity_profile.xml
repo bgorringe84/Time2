@@ -98,6 +98,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_width="176dp"
+        android:layout_height="42dp"
+        android:layout_marginBottom="36dp"
+        android:onClick="logout"
+        android:background="@drawable/mybutton"
+        android:text="Logout"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ProgressBar
         android:visibility="gone"
         android:id="@+id/progressbar"
