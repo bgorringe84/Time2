@@ -64,6 +64,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onClick(View view) {
                 saveUserInformation();
+                startActivity(new Intent(ProfileActivity.this, DashboardActivity.class));
             }
         });
     }
