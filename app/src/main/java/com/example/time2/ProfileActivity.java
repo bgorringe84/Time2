@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -37,8 +39,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Activity for User Preferences
+ *
+ * This activity is where new users get redirected to when they first login
+ * and would be asked for their profile details and budget goal related preferences
+ *
+ */
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
-
+    BottomNavigationView bottomNavigation;
     ImageView imageView;
     EditText editName, editIncome;
     Button saveBtn;
@@ -64,6 +73,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         fStore = FirebaseFirestore.getInstance();
         saveBtn = findViewById(R.id.button2);
 
+        // Initialize UI elements
+        bottomNavigation = findViewById(R.id.bottom_navigation);
+
         loadUserInformation();
 
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
+
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +93,28 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
             }
         });
+
+        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                // SWITCH to decide which case/fragment to go to
+                switch (item.getItemId()) {
+                    case R.id.navigation_dashboard:
+                        startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
+                        return true;
+                    case R.id.navigation_settings:
+                        startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
+                        return true;
+                    case R.id.navigation_goal:
+                        startActivity(new Intent(getApplicationContext(),AddGoalActivity.class));
+                        return true;
+                }
+                return false;
+            }
+        });
     }
+
 
     @Override
     protected void onStart() {
@@ -110,6 +144,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+
+    /**
+     * Method to get user's name and income and saves them to a firestore collection
+     */
     private void saveUserInformation() {
         String displayName = editName.getText().toString();
         if(displayName.isEmpty()) {
@@ -169,6 +207,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -187,6 +231,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    /**
+     *
+     */
     private void uploadImageToFirebaseStorage() {
         StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("profilepics/" + System.currentTimeMillis() + ".jpg");
 
@@ -218,6 +265,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         startActivityForResult(Intent.createChooser(intent, "Select Profile Image"), CHOOSE_IMAGE);
     }
 
+
+    /**
+     * Method that signs out current user and then displays the login activity
+     * @param view
+     */
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut(); //logout
         Toast.makeText(this, "Logged out!", Toast.LENGTH_SHORT).show();

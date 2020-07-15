@@ -17,6 +17,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+/**
+ * Activity for loading the user dashboard
+ *
+ * This activity is used to display the user's goal summary
+ */
 public class DashboardActivity extends AppCompatActivity{
     BottomNavigationView bottomNavigation;
     CardView cardView;
