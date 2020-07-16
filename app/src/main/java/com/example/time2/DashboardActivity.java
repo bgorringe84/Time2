@@ -1,37 +1,33 @@
 package com.example.time2;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import org.w3c.dom.Text;
+
+import java.text.BreakIterator;
+import java.text.StringCharacterIterator;
 
 /**
  * Activity for loading the user dashboard
@@ -41,6 +37,7 @@ import org.w3c.dom.Text;
 public class DashboardActivity extends AppCompatActivity{
     BottomNavigationView bottomNavigation;
     //TextView goalTitle, goalCost;
+    TextView displayName;
     private RecyclerView fStoreList;
     private FirestoreRecyclerAdapter adapter;
     FirebaseFirestore fStore;
@@ -55,12 +52,14 @@ public class DashboardActivity extends AppCompatActivity{
 
         // Initialize UI elements
         bottomNavigation = findViewById(R.id.bottom_navigation);
+        displayName = findViewById(R.id.welcome);
         //goalCost = findViewById(R.id.goal_cost);
         //goalTitle = findViewById(R.id.goal_title);
 
         // Initialize FireStore
         fStore = FirebaseFirestore.getInstance();
-        //fAuth = FirebaseAuth.getInstance();
+        fStoreList = findViewById(R.id.firestore_list);
+        fAuth = FirebaseAuth.getInstance();
 
         // Query
         Query query = fStore.collection("User_Goals");
@@ -95,7 +94,7 @@ public class DashboardActivity extends AppCompatActivity{
         userId = fAuth.getCurrentUser().getUid();
         DocumentReference documentReference = fStore.collection("User_Goals").document(userId);
 
-        // Retreive the data and set the data to local variables
+        // Retrieve the data and set the data to local variables
         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -104,6 +103,17 @@ public class DashboardActivity extends AppCompatActivity{
                     }
                 });
          */
+
+         // Displays Welcome message to include set displayName
+         userId = fAuth.getCurrentUser().getUid();
+         DocumentReference documentReference = fStore.collection("User_Pref").document("profile");
+
+         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+             @Override
+             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                 displayName.setText("Welcome " + value.getString("name") + "!");
+             }
+         });
 
         // Bottom Navigation Implementation
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

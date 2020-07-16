@@ -170,11 +170,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             userPref.put("income", userIncome);
 
             // Add new document
-            fStore.collection("User_Pref")
-                    .add(userPref)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            fStore.collection("User_Pref").document("profile")
+                    .set(userPref)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onSuccess(DocumentReference documentReference) {
+                        public void onSuccess(Void aVoid) {
                             Log.d(TAG, "User Preference Added");
                         }
                     })
