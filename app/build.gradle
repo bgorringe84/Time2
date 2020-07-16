@@ -48,6 +48,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.5.0'
     implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation "com.firebaseui:firebase-ui-auth:3.0.0"
+    implementation "com.firebaseui:firebase-ui-firestore:3.0.0"
 
     // Google Authentication
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
