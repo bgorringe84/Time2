@@ -48,7 +48,7 @@
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/goal_cost"
-        android:inputType="textPersonName"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />

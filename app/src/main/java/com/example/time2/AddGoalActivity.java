@@ -57,8 +57,13 @@ public class AddGoalActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (TextUtils.isDigitsOnly(cost)) {
+                    goalCost.setError("Only Numeric Digits Accepted.");
+                    return;
+                }
+
                 // Add Goal to Firebase
-                if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(cost)) {
+                if (!TextUtils.isEmpty(title) && !TextUtils.isDigitsOnly(cost)) {
 
                     // Create a new user with a first and last name
                     Map<String, Object> goal = new HashMap<>();
@@ -84,7 +89,7 @@ public class AddGoalActivity extends AppCompatActivity {
                                     Log.w(TAG, "Error adding document", e);
                                 }
                             });
-                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
                 }
                 else {
                     Toast.makeText(AddGoalActivity.this, "Error Adding Goal!", Toast.LENGTH_SHORT).show();

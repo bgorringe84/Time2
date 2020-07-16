@@ -15,6 +15,7 @@
 
     <!-- Dashboard Labels -->
     <string name="dashboard_welcome">Welcome to the Dashboard!</string>
-    <string name="dashboard_goalTitle">Here are your Goals:</string>
-
+    <string name="dashboard_description">Here are your Goals:</string>
+    <string name="dashboard_goalTitle">Goal:</string>
+    <string name="dashboard_goalCost">Goal Cost:</string>
 </resources>

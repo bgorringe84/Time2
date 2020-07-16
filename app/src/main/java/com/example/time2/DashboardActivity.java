@@ -1,21 +1,37 @@
 package com.example.time2;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import org.w3c.dom.Text;
 
 /**
  * Activity for loading the user dashboard
@@ -24,10 +40,13 @@ import com.google.firebase.firestore.QuerySnapshot;
  */
 public class DashboardActivity extends AppCompatActivity{
     BottomNavigationView bottomNavigation;
-    CardView cardView;
+    //TextView goalTitle, goalCost;
+    private RecyclerView fStoreList;
+    private FirestoreRecyclerAdapter adapter;
     FirebaseFirestore fStore;
+    FirebaseAuth fAuth;
     String TAG = "Dashboard Activity:";
-    private CollectionReference userGoals;
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +55,55 @@ public class DashboardActivity extends AppCompatActivity{
 
         // Initialize UI elements
         bottomNavigation = findViewById(R.id.bottom_navigation);
-        cardView = findViewById(R.id.firstGoal);
+        //goalCost = findViewById(R.id.goal_cost);
+        //goalTitle = findViewById(R.id.goal_title);
 
         // Initialize FireStore
-        //fStore = FirebaseFirestore.getInstance();
-        //userGoals.getFirestore().collection("User_Goals");
+        fStore = FirebaseFirestore.getInstance();
+        //fAuth = FirebaseAuth.getInstance();
+
+        // Query
+        Query query = fStore.collection("User_Goals");
+
+        // Recycler Options
+        FirestoreRecyclerOptions<GoalModel> options = new FirestoreRecyclerOptions.Builder<GoalModel>()
+                .setQuery(query, GoalModel.class)
+                .build();
+
+        // Initialize adapter
+         adapter = new FirestoreRecyclerAdapter<GoalModel, GoalViewHolder>(options) {
+            @NonNull
+            @Override
+            public GoalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single,parent,false);
+                return new GoalViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(GoalViewHolder goalViewHolder, int i, GoalModel goalModel) {
+                goalViewHolder.list_title.setText(goalModel.getTitle());
+                goalViewHolder.list_cost.setText(goalModel.getCost());
+            }
+        };
+
+         // Initialize fStoreList
+         fStoreList.setHasFixedSize(true);
+         fStoreList.setLayoutManager(new LinearLayoutManager(this));
+         fStoreList.setAdapter(adapter);
+
+         /*
+        userId = fAuth.getCurrentUser().getUid();
+        DocumentReference documentReference = fStore.collection("User_Goals").document(userId);
+
+        // Retreive the data and set the data to local variables
+        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        goalTitle.setText(value.getString("title"));
+                        goalCost.setText(value.getString("cost"));
+                    }
+                });
+         */
 
         // Bottom Navigation Implementation
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -62,5 +125,29 @@ public class DashboardActivity extends AppCompatActivity{
                 return false;
             }
         });
+    }
+
+    private class GoalViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView list_title;
+        private  TextView list_cost;
+
+        public GoalViewHolder(@NonNull View itemView) {
+            super(itemView);
+            list_title = itemView.findViewById(R.id.list_title);
+            list_cost = itemView.findViewById(R.id.list_cost);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
     }
 }
