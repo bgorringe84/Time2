@@ -162,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             return;
         }
 
-        if (TextUtils.isDigitsOnly(userIncome)) {
+        if (!TextUtils.isDigitsOnly(userIncome)) {
             editIncome.setError("Only Numeric Digits Accepted.");
             return;
         }
@@ -174,7 +174,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             return;
         }
 
-        if (TextUtils.isDigitsOnly(userSaving)) {
+        if (!TextUtils.isDigitsOnly(userSaving)) {
             editSaving.setError("Only Numeric Digits Accepted.");
             return;
         }
@@ -182,7 +182,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         /**
          * This method adds the user preferences to the firestore collections
          */
-        if(!TextUtils.isEmpty(displayName) && !TextUtils.isEmpty(userIncome)) {
+        if(!TextUtils.isEmpty(displayName) && !TextUtils.isEmpty(userIncome) && !TextUtils.isEmpty(userSaving)) {
             Map<String, Object> userPref = new HashMap<>();
             userPref.put("name", displayName);
             userPref.put("income", userIncome);
