@@ -1,7 +1,9 @@
 package com.example.time2;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -27,6 +32,7 @@ import com.google.firebase.firestore.Query;
 
 import java.text.BreakIterator;
 import java.text.StringCharacterIterator;
+import java.util.Objects;
 
 /**
  * Activity for loading the user dashboard
@@ -35,14 +41,16 @@ import java.text.StringCharacterIterator;
  */
 public class DashboardActivity extends AppCompatActivity{
     BottomNavigationView bottomNavigation;
-    //TextView goalTitle, goalCost;
+    TextView goalTitle, goalCost;
     TextView displayName;
+    TextView output;
     private RecyclerView fStoreList;
-    private FirestoreRecyclerAdapter adapter;
+    //private FirestoreRecyclerAdapter adapter;
     FirebaseFirestore fStore;
     FirebaseAuth fAuth;
     String TAG = "Dashboard Activity:";
     String userId;
+    double income, percentage, goal_cost, time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +60,15 @@ public class DashboardActivity extends AppCompatActivity{
         // Initialize UI elements
         bottomNavigation = findViewById(R.id.bottom_navigation);
         displayName = findViewById(R.id.welcome);
-        //goalCost = findViewById(R.id.goal_cost);
-        //goalTitle = findViewById(R.id.goal_title);
+        goalCost = findViewById(R.id.goal_cost);
+        goalTitle = findViewById(R.id.goal_title);
+        output = findViewById(R.id.time);
 
         // Initialize FireStore
         fStore = FirebaseFirestore.getInstance();
-        fStoreList = findViewById(R.id.firestore_list);
+        // fStoreList = findViewById(R.id.firestore_list);
         fAuth = FirebaseAuth.getInstance();
-
+        /*
         // Query
         Query query = fStore.collection("User_Goals");
 
@@ -88,31 +97,44 @@ public class DashboardActivity extends AppCompatActivity{
          fStoreList.setHasFixedSize(true);
          fStoreList.setLayoutManager(new LinearLayoutManager(this));
          fStoreList.setAdapter(adapter);
-
-         /*
-        userId = fAuth.getCurrentUser().getUid();
-        DocumentReference documentReference = fStore.collection("User_Goals").document(userId);
-
-        // Retrieve the data and set the data to local variables
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        goalTitle.setText(value.getString("title"));
-                        goalCost.setText(value.getString("cost"));
-                    }
-                });
          */
 
-         // Displays Welcome message to include set displayName
-         userId = fAuth.getCurrentUser().getUid();
-         DocumentReference documentReference = fStore.collection("User_Pref").document(userId);
+        userId = fAuth.getCurrentUser().getUid();
+        DocumentReference documentReference = fStore.collection("User_Goal").document(userId);
 
-         documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+         // Displays Welcome message to include set displayName
+         DocumentReference profileReference = fStore.collection("User_Pref").document(userId);
+
+         profileReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+             @SuppressLint("SetTextI18n")
              @Override
              public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                  displayName.setText("Welcome " + value.getString("name") + "!");
+                 income = Double.parseDouble(Objects.requireNonNull(value.getString("income")));
+                 percentage = Double.parseDouble(Objects.requireNonNull(value.getString("saving")));
              }
          });
+
+        // Retrieve the data and set the data to local variables
+        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                goalTitle.setText(value.getString("title"));
+                goalCost.setText("Cost: " + value.getString("cost"));
+                goal_cost = Double.parseDouble(Objects.requireNonNull(value.getString("cost")));
+
+                percentage /= 100f;
+                time = (goal_cost / (income * percentage)) * 30f;
+
+                // Convert to integer to lose decimal
+                int result = (int)time;
+
+                // Convert to string to display output
+                output.setText(Integer.toString(result) + " days to reach goal");
+            }
+        });
+
 
         // Bottom Navigation Implementation
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -135,7 +157,7 @@ public class DashboardActivity extends AppCompatActivity{
             }
         });
     }
-
+    /*
     private class GoalViewHolder extends RecyclerView.ViewHolder {
 
         private TextView list_title;
@@ -146,17 +168,17 @@ public class DashboardActivity extends AppCompatActivity{
             list_title = itemView.findViewById(R.id.list_title);
             list_cost = itemView.findViewById(R.id.list_cost);
         }
-    }
+    }*/
 
     @Override
     protected void onStop() {
         super.onStop();
-        adapter.stopListening();
+        //adapter.stopListening();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        adapter.startListening();
+        //adapter.startListening();
     }
 }
