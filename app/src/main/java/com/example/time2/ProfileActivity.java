@@ -162,10 +162,20 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             return;
         }
 
+        if (TextUtils.isDigitsOnly(userIncome)) {
+            editIncome.setError("Only Numeric Digits Accepted.");
+            return;
+        }
+
         String userSaving = editSaving.getText().toString();
         if(userSaving.isEmpty()) {
             editSaving.setError("Enter desired percentage of saving");
             editSaving.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isDigitsOnly(userSaving)) {
+            editSaving.setError("Only Numeric Digits Accepted.");
             return;
         }
 
