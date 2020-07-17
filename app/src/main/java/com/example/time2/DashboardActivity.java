@@ -1,6 +1,5 @@
 package com.example.time2;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -106,7 +105,7 @@ public class DashboardActivity extends AppCompatActivity{
 
          // Displays Welcome message to include set displayName
          userId = fAuth.getCurrentUser().getUid();
-         DocumentReference documentReference = fStore.collection("User_Pref").document("profile");
+         DocumentReference documentReference = fStore.collection("User_Pref").document(userId);
 
          documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
              @Override

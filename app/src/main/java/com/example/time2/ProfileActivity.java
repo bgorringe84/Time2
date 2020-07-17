@@ -49,7 +49,7 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
     BottomNavigationView bottomNavigation;
     ImageView imageView;
-    EditText editName, editIncome;
+    EditText editName, editIncome, editSaving;
     Button saveBtn;
     private static final int CHOOSE_IMAGE = 101;
     String profileImageUrl;
@@ -58,6 +58,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     FirebaseAuth mAuth;
     FirebaseFirestore fStore;
     String TAG = "Add User Preferences";
+    String userId;
+
 
 
     @Override
@@ -67,6 +69,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         editName = findViewById(R.id.editTextTextPersonName);
         editIncome = findViewById(R.id.editTextNumber);
+        editSaving = findViewById(R.id.editTextNumber2);
         imageView = findViewById(R.id.imageView);
         progressBar = findViewById(R.id.progressbar);
         mAuth = FirebaseAuth.getInstance();
@@ -126,6 +129,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    // This is probably no longer necessary since we're already saving these to firestore collection (See below)
     private void loadUserInformation() {
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -136,12 +140,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             if (user.getDisplayName() != null) {
                 editName.setText(user.getDisplayName());
             }
-//            if (user.getuserIncome() )
-
         }
-
-
-
     }
 
 
@@ -163,14 +162,25 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             return;
         }
 
-        // Add User Details to Firestore
+        String userSaving = editSaving.getText().toString();
+        if(userSaving.isEmpty()) {
+            editSaving.setError("Enter desired percentage of saving");
+            editSaving.requestFocus();
+            return;
+        }
+
+        /**
+         * This method adds the user preferences to the firestore collections
+         */
         if(!TextUtils.isEmpty(displayName) && !TextUtils.isEmpty(userIncome)) {
             Map<String, Object> userPref = new HashMap<>();
             userPref.put("name", displayName);
             userPref.put("income", userIncome);
+            userPref.put("saving", userSaving);
 
             // Add new document
-            fStore.collection("User_Pref").document("profile")
+            userId = mAuth.getCurrentUser().getUid();
+            fStore.collection("User_Pref").document(userId)
                     .set(userPref)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -227,7 +237,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
