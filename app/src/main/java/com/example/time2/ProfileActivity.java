@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -59,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     FirebaseFirestore fStore;
     String TAG = "Add User Preferences";
     String userId;
+    private SharedPreferences sharedPref;
 
 
 
@@ -127,6 +129,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             finish();
             startActivity(new Intent(this, MainActivity.class));
         }
+
+        sharedPref = getSharedPreferences("pref", MODE_PRIVATE);
+        editName.setText(sharedPref.getString("userName", ""), TextView.BufferType.EDITABLE);
+        editIncome.setText(sharedPref.getString("income", ""), TextView.BufferType.EDITABLE);
+        editSaving.setText(sharedPref.getString("saving", ""), TextView.BufferType.EDITABLE);
     }
 
     // This is probably no longer necessary since we're already saving these to firestore collection (See below)
@@ -148,6 +155,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
      * Method to get user's name and income and saves them to a firestore collection
      */
     private void saveUserInformation() {
+        sharedPref = getSharedPreferences("pref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
         String displayName = editName.getText().toString();
         if(displayName.isEmpty()) {
             editName.setError("Name required");
@@ -225,6 +235,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     });
         }
+
+        editor.putString("userName", editName.getText().toString());
+        editor.putString("income", editIncome.getText().toString());
+        editor.putString("saving", editSaving.getText().toString());
+        editor.apply();
     }
 
     /**

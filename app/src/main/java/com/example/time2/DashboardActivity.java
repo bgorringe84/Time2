@@ -2,6 +2,7 @@ package com.example.time2;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,6 +52,7 @@ public class DashboardActivity extends AppCompatActivity{
     String TAG = "Dashboard Activity:";
     String userId;
     double income, percentage, goal_cost, time;
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,10 @@ public class DashboardActivity extends AppCompatActivity{
         fStore = FirebaseFirestore.getInstance();
         // fStoreList = findViewById(R.id.firestore_list);
         fAuth = FirebaseAuth.getInstance();
+
+        //Used shared pref to fetch display name
+        sharedPref = getSharedPreferences("pref", MODE_PRIVATE);
+        displayName.setText(String.format("Welcome %s!", sharedPref.getString("userName", "")), TextView.BufferType.EDITABLE);
         /*
         // Query
         Query query = fStore.collection("User_Goals");
@@ -109,7 +115,7 @@ public class DashboardActivity extends AppCompatActivity{
              @SuppressLint("SetTextI18n")
              @Override
              public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                 displayName.setText("Welcome " + value.getString("name") + "!");
+                 //displayName.setText("Welcome " + value.getString("name") + "!");
                  income = Double.parseDouble(Objects.requireNonNull(value.getString("income")));
                  percentage = Double.parseDouble(Objects.requireNonNull(value.getString("saving")));
              }
