@@ -2,7 +2,6 @@ package com.example.time2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -83,9 +81,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     progressBar.setVisibility(View.GONE);
                     finish();
                     startActivity(new Intent(SignUpActivity.this, ProfileActivity.class));
-//                    Intent intent = new Intent(SignUpActivity.this, ProfileActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // prevent user from using back button to return to login
-//                    startActivity(intent);
                 } else {
                     if(task.getException() instanceof FirebaseAuthUserCollisionException) {
                         Toast.makeText(getApplicationContext(), "User Already Registered", Toast.LENGTH_SHORT).show();

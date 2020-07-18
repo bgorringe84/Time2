@@ -4,24 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -29,10 +17,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-
-import java.text.BreakIterator;
-import java.text.StringCharacterIterator;
 import java.util.Objects;
 
 /**
@@ -46,7 +30,6 @@ public class DashboardActivity extends AppCompatActivity{
     TextView displayName;
     TextView output;
     private RecyclerView fStoreList;
-    //private FirestoreRecyclerAdapter adapter;
     FirebaseFirestore fStore;
     FirebaseAuth fAuth;
     String TAG = "Dashboard Activity:";
@@ -68,42 +51,12 @@ public class DashboardActivity extends AppCompatActivity{
 
         // Initialize FireStore
         fStore = FirebaseFirestore.getInstance();
-        // fStoreList = findViewById(R.id.firestore_list);
         fAuth = FirebaseAuth.getInstance();
 
         //Used shared pref to fetch display name
         sharedPref = getSharedPreferences("pref", MODE_PRIVATE);
         displayName.setText(String.format("Welcome %s!", sharedPref.getString("userName", "")), TextView.BufferType.EDITABLE);
-        /*
-        // Query
-        Query query = fStore.collection("User_Goals");
 
-        // Recycler Options
-        FirestoreRecyclerOptions<GoalModel> options = new FirestoreRecyclerOptions.Builder<GoalModel>()
-                .setQuery(query, GoalModel.class)
-                .build();
-
-        // Initialize adapter
-         adapter = new FirestoreRecyclerAdapter<GoalModel, GoalViewHolder>(options) {
-            @NonNull
-            @Override
-            public GoalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_single,parent,false);
-                return new GoalViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(GoalViewHolder goalViewHolder, int i, GoalModel goalModel) {
-                goalViewHolder.list_title.setText(goalModel.getTitle());
-                goalViewHolder.list_cost.setText(goalModel.getCost());
-            }
-        };
-
-         // Initialize fStoreList
-         fStoreList.setHasFixedSize(true);
-         fStoreList.setLayoutManager(new LinearLayoutManager(this));
-         fStoreList.setAdapter(adapter);
-         */
 
         userId = fAuth.getCurrentUser().getUid();
         DocumentReference documentReference = fStore.collection("User_Goal").document(userId);
@@ -163,28 +116,15 @@ public class DashboardActivity extends AppCompatActivity{
             }
         });
     }
-    /*
-    private class GoalViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView list_title;
-        private  TextView list_cost;
-
-        public GoalViewHolder(@NonNull View itemView) {
-            super(itemView);
-            list_title = itemView.findViewById(R.id.list_title);
-            list_cost = itemView.findViewById(R.id.list_cost);
-        }
-    }*/
 
     @Override
     protected void onStop() {
         super.onStop();
-        //adapter.stopListening();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //adapter.startListening();
     }
 }

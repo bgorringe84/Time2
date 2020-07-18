@@ -136,7 +136,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         editSaving.setText(sharedPref.getString("saving", ""), TextView.BufferType.EDITABLE);
     }
 
-    // This is probably no longer necessary since we're already saving these to firestore collection (See below)
+
     private void loadUserInformation() {
 
         FirebaseUser user = mAuth.getCurrentUser();
@@ -190,7 +190,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         /**
-         * This method adds the user preferences to the firestore collections
+         * This method adds the user preferences to the firestore collections and sharedPreferences
          */
         if(!TextUtils.isEmpty(displayName) && !TextUtils.isEmpty(userIncome) && !TextUtils.isEmpty(userSaving)) {
             Map<String, Object> userPref = new HashMap<>();
