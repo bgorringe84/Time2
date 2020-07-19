@@ -117,7 +117,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:src="@drawable/ic_baseline_assignment_turned_in_24" />
+                    android:src="@drawable/ic_baseline_assignment_turned_in_24"
+                    android:contentDescription="@string/logoDescription" />
 
                 <TextView
                     android:id="@+id/goal_title"
