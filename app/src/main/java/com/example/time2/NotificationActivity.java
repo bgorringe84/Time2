@@ -5,20 +5,16 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Calendar;
 
 public class NotificationActivity extends AppCompatActivity {
@@ -42,31 +38,47 @@ public class NotificationActivity extends AppCompatActivity {
         saveNotifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Toast
-                Toast.makeText(NotificationActivity.this, "Reminder Set!", Toast.LENGTH_SHORT).show();
 
                 // Converts string data into integer data to use for Calendar Object
-                String hours = editHours.getText().toString().trim();
-                String minutes = editMins.getText().toString().trim();
-                int iHours = Integer.parseInt(hours);
-                int iMins = Integer.parseInt(minutes);
+                 String hours = editHours.getText().toString().trim();
+                 String minutes = editMins.getText().toString().trim();
 
-                // Pushes the data to the calendar object and sets it as the user's inputted notification time
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY,iHours);
-                calendar.set(Calendar.MINUTE,iMins);
+                 // Error Checking
+                if (TextUtils.isEmpty(hours)) {
+                    editHours.setError("Hour is required in numeric format.");
+                    return;
+                }
 
-                Intent intent = new Intent(NotificationActivity.this, AlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationActivity.this,0 , intent,0);
-                //PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 100, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                if (TextUtils.isEmpty(minutes)) {
+                    editMins.setError("Minutes are required in numeric format.");
+                    return;
+                }
 
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
-                startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+                if (!TextUtils.isEmpty(hours) && !TextUtils.isEmpty(minutes)) {
+                    // Toast
+                    Toast.makeText(NotificationActivity.this, "Reminder Set!", Toast.LENGTH_SHORT).show();
+
+                    // Pushes the data to the calendar object and sets it as the user's inputted notification time
+                    int iHours = Integer.parseInt(hours);
+                    int iMins = Integer.parseInt(minutes);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.HOUR_OF_DAY, iHours);
+                    calendar.set(Calendar.MINUTE, iMins);
+
+                    // Alerts the receiver and sends the notification
+                    Intent intent = new Intent(NotificationActivity.this, AlarmReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(NotificationActivity.this, 0, intent, 0);
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                    startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+                } else {
+                    Toast.makeText(NotificationActivity.this, "Error Setting Reminder!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
+    // For API 26.0 and Above, we need to create a channel to create notifications
     public void createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
@@ -80,15 +92,4 @@ public class NotificationActivity extends AppCompatActivity {
             manager.createNotificationChannel(notificationChannel);
         }
     }
-
-/*
-    public void enableToggleButton (View view) {
-        boolean isEnabled = ((ToggleButton)view).isEnabled();
-
-        if(isEnabled)
-            NotificationHelper.scheduleRepeatingRTCNotification(mContext, editHours.getText().toString(), editMins.getText().toString());
-        else
-            NotificationHelper.cancelAlarmRTC();
-    }
-*/
 }

@@ -29,5 +29,6 @@
     <string name="notification_hourLabel">Hour:</string>
     <string name="notification_minuteLabel">Minutes:</string>
     <string name="notification_save">Save Notification Settings</string>
-
+    <string name="notification_min_hint">00:60</string>
+    <string name="notification_hr_hint">24:00</string>
 </resources>
