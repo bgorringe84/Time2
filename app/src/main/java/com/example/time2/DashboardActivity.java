@@ -40,7 +40,7 @@ public class DashboardActivity extends AppCompatActivity{
     String userId, date;
     double income, percentage, goal_cost, time;
     private SharedPreferences sharedPref;
-    Long timestamp = 0L;
+    float timestamp = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class DashboardActivity extends AppCompatActivity{
         goalCost = findViewById(R.id.goal_cost);
         goalTitle = findViewById(R.id.goal_title);
         output = findViewById(R.id.time);
-        date = getDate(timestamp);
+        date = getDate((long) timestamp);
 
 
         // Initialize FireStore
@@ -106,11 +106,12 @@ public class DashboardActivity extends AppCompatActivity{
                     percentage /= 100f;
                     time = (goal_cost / (income * percentage)) * 30f;
 
-                    // Convert to integer to lose decimal
-                    int result = (int)time;
+                    float resultMilli = (float) (time * 86400);
+                    float newTimestamp = resultMilli + timestamp;
+                    float result = (float) ((((System.currentTimeMillis() - (newTimestamp*1000)) / 8.64e+7)) * -1) + 1;
 
                     // Convert to string to display output
-                    output.setText(Integer.toString(result) + " days to reach goal. " + date);
+                    output.setText(Integer.toString((int) result) + " days until completion on " + getDate((long) newTimestamp));
                 } else {
                     output.setText("Please add a goal");
                 }
