@@ -22,6 +22,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/button_saveNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginBottom="136dp"
+        android:background="@drawable/mybutton"
+        android:text="@string/notification_save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.471"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintVertical_bias="0.0" />
+
     <view
         android:id="@+id/view"
         class="androidx.constraintlayout.widget.Group"
@@ -130,18 +144,6 @@
         app:layout_constraintTop_toBottomOf="@+id/editMinute"
         app:layout_constraintVertical_bias="0.0" />
 -->
-    <Button
-        android:id="@+id/button_saveNotification"
-        android:layout_width="wrap_content"
-        android:background="@drawable/mybutton"
-        android:layout_height="48dp"
-        android:layout_marginBottom="136dp"
-        android:text="@string/notification_save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintVertical_bias="0.755" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
