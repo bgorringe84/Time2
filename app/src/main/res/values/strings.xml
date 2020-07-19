@@ -19,4 +19,15 @@
     <string name="dashboard_goalTitle">Goal:</string>
     <string name="dashboard_goalCost">Goal Cost:</string>
     <string name="dashboard_time">Days Left to Reach Goal</string>
+
+    <!-- Notification Labels -->
+    <string name="notification_buttonLabel">Edit Notifications</string>
+    <string name="notification_title">Customize Your Notifications</string>
+    <string name="notification_instructions1">When would you like to be reminded?</string>
+    <string name="notification_instructions2">Enter the following information in Military Time</string>
+    <string name="notification_toggle">Enable Notifications:</string>
+    <string name="notification_hourLabel">Hour:</string>
+    <string name="notification_minuteLabel">Minutes:</string>
+    <string name="notification_save">Save Notification Settings</string>
+
 </resources>

@@ -57,4 +57,7 @@ dependencies {
 
     // Cardview
     implementation 'androidx.cardview:cardview:1.0.0'
+
+    // Notifications
+    implementation 'androidx.core:core:1.3.0'
 }

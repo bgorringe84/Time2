@@ -59,13 +59,8 @@ public class AddGoalActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (!TextUtils.isDigitsOnly(cost)) {
-                    goalCost.setError("Only Numeric Digits Accepted.");
-                    return;
-                }
-
                 // Add Goal to Firebase
-                if (!TextUtils.isEmpty(title) && TextUtils.isDigitsOnly(cost)) {
+                if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(cost)) {
 
                     // Create a new user with a first and last name
                     Map<String, Object> goal = new HashMap<>();
@@ -82,7 +77,7 @@ public class AddGoalActivity extends AppCompatActivity {
                             .set(goal)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onSuccess(Void aVoid) {
+                                public void onSuccess(Void Void) {
                                     Log.d(TAG, "User Goal Added");
                                 }
                             });

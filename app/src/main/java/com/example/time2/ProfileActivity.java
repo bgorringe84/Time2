@@ -37,6 +37,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +53,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     ImageView imageView;
     EditText editName, editIncome, editSaving;
     Button saveBtn;
+    Button notificationBtn;
     private static final int CHOOSE_IMAGE = 101;
     String profileImageUrl;
     Uri uriProfileImage;
@@ -61,8 +63,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     String TAG = "Add User Preferences";
     String userId;
     private SharedPreferences sharedPref;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +77,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         saveBtn = findViewById(R.id.button2);
+        notificationBtn = findViewById(R.id.button_notification);
 
         // Initialize UI elements
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -96,6 +97,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             public void onClick(View view) {
                 saveUserInformation();
                 startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+            }
+        });
+
+        notificationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
             }
         });
 

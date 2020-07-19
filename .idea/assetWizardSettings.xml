@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/dashboard/baseline_dashboard_24.xml" />
+                                      <entry key="url" value="jar:file:/Y:/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/access_time/baseline_access_time_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -34,7 +34,8 @@
                         <option name="values">
                           <map>
                             <entry key="autoMirrored" value="true" />
-                            <entry key="outputName" value="ic_baseline_dashboard_24" />
+                            <entry key="color" value="f0f4ff" />
+                            <entry key="outputName" value="ic_baseline_access_time_24" />
                             <entry key="sourceFile" value="C:\Users\Ivanro Lagazo\StudioProjects\Time2" />
                           </map>
                         </option>
