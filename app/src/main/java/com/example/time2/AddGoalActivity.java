@@ -26,6 +26,7 @@ public class AddGoalActivity extends AppCompatActivity {
     FirebaseFirestore fStore;
     String userId;
     FirebaseAuth mAuth;
+    Long time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class AddGoalActivity extends AppCompatActivity {
         goalAdd = findViewById(R.id.goalAdd_button);
         bottomNavigation = findViewById(R.id.bottom_navigation);
         mAuth = FirebaseAuth.getInstance();
+        time = getCurrentTimestamp();
 
         // Initialize Cloud Firestore
         fStore = FirebaseFirestore.getInstance();
@@ -66,6 +68,7 @@ public class AddGoalActivity extends AppCompatActivity {
                     Map<String, Object> goal = new HashMap<>();
                     goal.put("title", title);
                     goal.put("cost", cost);
+                    goal.put("time", time);
 
                     // Error checking through logger
                     Log.d(TAG, "onSuccess: Title:" + title + "  Cost:" + cost);
@@ -109,5 +112,10 @@ public class AddGoalActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private Long getCurrentTimestamp() {
+        Long timestamp = System.currentTimeMillis()/1000;
+        return timestamp;
     }
 }

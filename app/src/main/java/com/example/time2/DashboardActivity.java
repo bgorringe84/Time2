@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -17,6 +18,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -33,9 +37,10 @@ public class DashboardActivity extends AppCompatActivity{
     FirebaseFirestore fStore;
     FirebaseAuth fAuth;
     String TAG = "Dashboard Activity:";
-    String userId;
+    String userId, date;
     double income, percentage, goal_cost, time;
     private SharedPreferences sharedPref;
+    Long timestamp = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,8 @@ public class DashboardActivity extends AppCompatActivity{
         goalCost = findViewById(R.id.goal_cost);
         goalTitle = findViewById(R.id.goal_title);
         output = findViewById(R.id.time);
+        date = getDate(timestamp);
+
 
         // Initialize FireStore
         fStore = FirebaseFirestore.getInstance();
@@ -68,7 +75,7 @@ public class DashboardActivity extends AppCompatActivity{
              @SuppressLint("SetTextI18n")
              @Override
              public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                 //displayName.setText("Welcome " + value.getString("name") + "!");
+                 //displayName.setText("Welcome " + value.getString("name") + "!"); // Used SharedPreferences instead
                  income = Double.parseDouble(Objects.requireNonNull(value.getString("income")));
                  percentage = Double.parseDouble(Objects.requireNonNull(value.getString("saving")));
              }
@@ -79,21 +86,36 @@ public class DashboardActivity extends AppCompatActivity{
             @SuppressLint("SetTextI18n")
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                goalTitle.setText(value.getString("title"));
-                goalCost.setText("Cost: " + value.getString("cost"));
-                goal_cost = Double.parseDouble(Objects.requireNonNull(value.getString("cost")));
+                if(value.getString("title").isEmpty()) {
+                    goalTitle.setText("No Set Goal");
+                } else {
+                    goalTitle.setText(value.getString("title"));
+                }
 
-                percentage /= 100f;
-                time = (goal_cost / (income * percentage)) * 30f;
+                if(value.getString("cost").isEmpty()) {
+                    goalCost.setText("0");
+                } else {
+                    goalCost.setText("Cost: " + value.getString("cost"));
+                }
 
-                // Convert to integer to lose decimal
-                int result = (int)time;
 
-                // Convert to string to display output
-                output.setText(Integer.toString(result) + " days to reach goal");
+                if((!value.getString("title").isEmpty()) && (!value.getString("cost").isEmpty())) {
+                    goal_cost = Double.parseDouble(Objects.requireNonNull(value.getString("cost")));
+                    timestamp = value.getLong("time");
+
+                    percentage /= 100f;
+                    time = (goal_cost / (income * percentage)) * 30f;
+
+                    // Convert to integer to lose decimal
+                    int result = (int)time;
+
+                    // Convert to string to display output
+                    output.setText(Integer.toString(result) + " days to reach goal. " + date);
+                } else {
+                    output.setText("Please add a goal");
+                }
             }
-        });
-
+     });
 
         // Bottom Navigation Implementation
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -117,6 +139,12 @@ public class DashboardActivity extends AppCompatActivity{
         });
     }
 
+    private String getDate(Long timestamp) {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.setTimeInMillis(timestamp * 1000);
+        String date = DateFormat.format("dd-MM-yyyy", cal).toString();
+        return date;
+    }
 
     @Override
     protected void onStop() {
