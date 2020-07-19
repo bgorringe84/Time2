@@ -37,8 +37,8 @@
     <string name="notification_hourLabel">Hour:</string>
     <string name="notification_minuteLabel">Minutes:</string>
     <string name="notification_save">Save Notification Settings</string>
-    <string name="notification_min_hint">00:60</string>
-    <string name="notification_hr_hint">24:00</string>
+    <string name="notification_min_hint">0060</string>
+    <string name="notification_hr_hint">2400</string>
 
     <!-- Profile Settings -->
     <string name="profile_settings">Profile Settings:</string>
